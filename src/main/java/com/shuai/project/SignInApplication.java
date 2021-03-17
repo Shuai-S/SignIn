@@ -1,13 +1,14 @@
 package com.shuai.project;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.shuai.project.domain.XSpeed;
 
-@SpringBootApplication
+
 public class SignInApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SignInApplication.class, args);
+        System.out.println(new XSpeed().login());
+
+
     }
 
 }
