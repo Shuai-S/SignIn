@@ -3,11 +3,9 @@ package com.shuai.project.domain;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 
-@Slf4j
 public class XSpeed {
 
     private static final String XSPEED_URL_LOGIN = "https://blay.club/auth/login";
@@ -21,7 +19,9 @@ public class XSpeed {
      */
     public HttpResponse login() {
 
-        log.info("----------开始登录----------");
+
+
+
 
         HashMap<String, Object> body = new HashMap<>();
         body.put("email", "1354176174@qq.com");
