@@ -1,5 +1,7 @@
 package com.shuai.project.domain.baidu;
 
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shuai.project.common.Request;
@@ -11,9 +13,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * FileName: BaiDuTieBa
@@ -29,7 +32,7 @@ import java.util.*;
 public class BaiDuTieBa
 {
     /** 获取日志记录器对象 */
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaiDuTieBa.class);
+    private static final Log log = LogFactory.get();
 
     /** 获取用户所有关注贴吧 */
     String LIKE_URL = "https://tieba.baidu.com/mo/q/newmoindex";
@@ -51,14 +54,14 @@ public class BaiDuTieBa
         Cookie cookie = Cookie.getInstance();
         // 存入Cookie，以备使用
         if(args.length==0){
-            LOGGER.warn("请在Secrets中填写BDUSS");
+            log.warn("请在Secrets中填写BDUSS");
         }
         cookie.setBDUSS(args[0]);
         BaiDuTieBa run = new BaiDuTieBa();
         run.getTbs();
         run.getFollow();
         run.runSign();
-        LOGGER.info("共 {} 个贴吧 - 成功: {} - 失败: {}",followNum,success.size(),followNum-success.size());
+        log.info("共 {} 个贴吧 - 成功: {} - 失败: {}",followNum,success.size(),followNum-success.size());
         if(args.length == 2){
             run.send(args[1]);
         }
@@ -76,13 +79,13 @@ public class BaiDuTieBa
         try{
             JSONObject jsonObject = Request.get(TBS_URL);
             if("1".equals(jsonObject.getString("is_login"))){
-                LOGGER.info("获取tbs成功");
+                log.info("获取tbs成功");
                 tbs = jsonObject.getString("tbs");
             } else{
-                LOGGER.warn("获取tbs失败 -- " + jsonObject);
+                log.warn("获取tbs失败 -- " + jsonObject);
             }
         } catch (Exception e){
-            LOGGER.error("获取tbs部分出现错误 -- " + e);
+            log.error("获取tbs部分出现错误 -- " + e);
         }
     }
 
@@ -94,7 +97,7 @@ public class BaiDuTieBa
     public void getFollow(){
         try{
             JSONObject jsonObject = Request.get(LIKE_URL);
-            LOGGER.info("获取贴吧列表成功");
+            log.info("获取贴吧列表成功");
             JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("like_forum");
             followNum = jsonArray.size();
             // 获取用户所有关注的贴吧
@@ -108,7 +111,7 @@ public class BaiDuTieBa
                 }
             }
         } catch (Exception e){
-            LOGGER.error("获取贴吧列表部分出现错误 -- " + e);
+            log.error("获取贴吧列表部分出现错误 -- " + e);
         }
     }
 
@@ -123,8 +126,8 @@ public class BaiDuTieBa
         Integer flag = 5;
         try{
             while(success.size()<followNum&&flag>0){
-                LOGGER.info("-----第 {} 轮签到开始-----", 5 - flag + 1);
-                LOGGER.info("还剩 {} 贴吧需要签到", followNum - success.size());
+                log.info("-----第 {} 轮签到开始-----", 5 - flag + 1);
+                log.info("还剩 {} 贴吧需要签到", followNum - success.size());
                 Iterator<String> iterator = follow.iterator();
                 while(iterator.hasNext()){
                     String s = iterator.next();
@@ -134,9 +137,9 @@ public class BaiDuTieBa
                     if("0".equals(post.getString("error_code"))){
                         iterator.remove();
                         success.add(rotation);
-                        LOGGER.info(rotation + ": " + "签到成功");
+                        log.info(rotation + ": " + "签到成功");
                     } else {
-                        LOGGER.warn(rotation + ": " + "签到失败");
+                        log.warn(rotation + ": " + "签到失败");
                     }
                 }
                 if (success.size() != followNum){
@@ -151,7 +154,7 @@ public class BaiDuTieBa
                 flag--;
             }
         } catch (Exception e){
-            LOGGER.error("签到部分出现错误 -- " + e);
+            log.error("签到部分出现错误 -- " + e);
         }
     }
 
@@ -184,9 +187,9 @@ public class BaiDuTieBa
                 entity = resp.getEntity();
             }
             respContent = EntityUtils.toString(entity, "UTF-8");
-            LOGGER.info("server酱推送正常");
+            log.info("server酱推送正常");
         } catch (Exception e){
-            LOGGER.error("server酱发送失败 -- " + e);
+            log.error("server酱发送失败 -- " + e);
         }
     }
 }

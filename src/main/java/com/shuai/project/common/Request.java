@@ -1,8 +1,11 @@
 package com.shuai.project.common;
 
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSONObject;
 import com.shuai.project.domain.baidu.Cookie;
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -11,8 +14,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 封装的网络请求请求工具类
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Request {
     /** 获取日志记录器对象 */
-    private static final Logger LOGGER = LoggerFactory.getLogger(Request.class);
+    private static final Log log = LogFactory.get();
     /** 获取Cookie对象 */
     private static Cookie cookie = Cookie.getInstance();
     private Request(){};
@@ -55,7 +56,7 @@ public class Request {
             }
             respContent = EntityUtils.toString(entity, "UTF-8");
         } catch (Exception e){
-            LOGGER.info("get请求错误 -- "+e);
+            log.info("get请求错误 -- "+e);
         } finally {
             return JSONObject.parseObject(respContent);
         }
@@ -93,7 +94,7 @@ public class Request {
             }
             respContent = EntityUtils.toString(entity, "UTF-8");
         } catch (Exception e){
-            LOGGER.info("post请求错误 -- "+e);
+            log.info("post请求错误 -- "+e);
         }
         finally {
             return JSONObject.parseObject(respContent);

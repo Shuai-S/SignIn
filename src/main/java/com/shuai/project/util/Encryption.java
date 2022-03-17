@@ -1,7 +1,7 @@
 package com.shuai.project.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -12,8 +12,9 @@ import java.security.MessageDigest;
  * @Time 2020-10-31
  */
 public class Encryption {
+
     /** 获取日志记录器对象 */
-    private static final Logger LOGGER = LoggerFactory.getLogger(Encryption.class);
+    private static final Log log = LogFactory.get();
 
     /**
      * 对字符串进行 MD5加密
@@ -34,7 +35,7 @@ public class Encryption {
 
             return new BigInteger(1, md.digest()).toString(16);
         } catch (Exception e){
-            LOGGER.error("字符串进行MD5加密错误 -- " + e);
+            log.error("字符串进行MD5加密错误 -- " + e);
             return "";
         }
     }
